@@ -73,4 +73,28 @@ class NoteServiceTest {
 
         assertEquals("note-new-content", noteEntityArgumentCaptor.getValue().getContent());
     }
+
+    @Test
+    void deleteNoteNotFound() {
+        var uuid = UUID.randomUUID();
+
+        when(noteRepository.findById(uuid)).thenReturn(Optional.empty());
+        var postItException = assertThrows(PostItException.class, () -> noteService.deleteNote(uuid));
+        assertInstanceOf(PostItException.class, postItException);
+        assertEquals(postItException.getErrors().size(), 1);
+        assertEquals(postItException.getErrors().iterator().next(), "Note not found");
+    }
+
+    @Test
+    void deleteNoteRepositoryCalled() throws PostItException {
+        var uuid = UUID.randomUUID();
+        var entity = new NoteEntity();
+        entity.setId(uuid);
+
+        when(noteRepository.findById(uuid)).thenReturn(Optional.of(entity));
+        noteService.deleteNote(uuid);
+        verify(noteRepository, times(1)).delete(noteEntityArgumentCaptor.capture());
+
+        assertEquals(uuid, noteEntityArgumentCaptor.getValue().getId());
+    }
 }

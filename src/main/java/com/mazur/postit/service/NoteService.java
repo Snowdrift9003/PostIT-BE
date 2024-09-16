@@ -42,4 +42,9 @@ public class NoteService {
         var updatedNote = noteRepository.save(noteEntity);
         return noteMapper.mapToDto(updatedNote);
     }
+
+    public void deleteNote(UUID id) throws PostItException {
+        var noteEntity = noteRepository.findById(id).orElseThrow(() -> new PostItException(Set.of("Note not found")));
+        noteRepository.delete(noteEntity);
+    }
 }

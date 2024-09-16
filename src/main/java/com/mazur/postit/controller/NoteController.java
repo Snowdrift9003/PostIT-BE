@@ -36,4 +36,9 @@ public class NoteController {
     public OutputNoteDto updateNote(@PathVariable UUID id, @Valid @RequestBody InputNoteDto dto) throws PostItException {
         return noteService.updateNote(id, dto);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteNote(@PathVariable UUID id) throws PostItException {
+        noteService.deleteNote(id);
+    }
 }
