@@ -1,13 +1,14 @@
 package com.mazur.postit.controller;
 
 import com.mazur.postit.dto.InputNoteDto;
+import com.mazur.postit.dto.OutputNoteDto;
 import com.mazur.postit.service.NoteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/note")
@@ -15,8 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class NoteController {
     private final NoteService noteService;
 
+    @GetMapping
+    public List<OutputNoteDto> getNotes() {
+        return noteService.getAllNotes();
+    }
+
+    @GetMapping("/{id}")
+    public OutputNoteDto getNote(@PathVariable UUID id) {
+        return noteService.getNote(id);
+    }
+
     @PostMapping
-    public void createNote(@Valid @RequestBody InputNoteDto dto) {
-        noteService.createNote(dto);
+    public OutputNoteDto createNote(@Valid @RequestBody InputNoteDto dto) {
+        return noteService.createNote(dto);
+    }
+
+    @PatchMapping("/{id}")
+    public OutputNoteDto updateNote(@PathVariable UUID id, @Valid @RequestBody InputNoteDto dto) {
+        return noteService.updateNote(id, dto);
     }
 }
