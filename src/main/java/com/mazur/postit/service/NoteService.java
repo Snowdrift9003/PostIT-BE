@@ -1,5 +1,6 @@
 package com.mazur.postit.service;
 
+import com.mazur.postit.controller.exception.PostItException;
 import com.mazur.postit.db.repository.NoteRepository;
 import com.mazur.postit.dto.InputNoteDto;
 import com.mazur.postit.dto.OutputNoteDto;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -28,13 +30,13 @@ public class NoteService {
         return noteMapper.mapToDto(notes);
     }
 
-    public OutputNoteDto getNote(UUID id) {
-        var noteEntity = noteRepository.findById(id).orElseThrow(); //todo: replace with correct exception
+    public OutputNoteDto getNote(UUID id) throws PostItException {
+        var noteEntity = noteRepository.findById(id).orElseThrow(() -> new PostItException(Set.of("Note not found")));
         return noteMapper.mapToDto(noteEntity);
     }
 
-    public OutputNoteDto updateNote(UUID id, @Valid InputNoteDto dto) {
-        var noteEntity = noteRepository.findById(id).orElseThrow();
+    public OutputNoteDto updateNote(UUID id, @Valid InputNoteDto dto) throws PostItException {
+        var noteEntity = noteRepository.findById(id).orElseThrow(() -> new PostItException(Set.of("Note not found")));
         noteMapper.updateFromDto(dto, noteEntity);
 
         var updatedNote = noteRepository.save(noteEntity);

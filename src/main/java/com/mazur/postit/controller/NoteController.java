@@ -1,5 +1,6 @@
 package com.mazur.postit.controller;
 
+import com.mazur.postit.controller.exception.PostItException;
 import com.mazur.postit.dto.InputNoteDto;
 import com.mazur.postit.dto.OutputNoteDto;
 import com.mazur.postit.service.NoteService;
@@ -22,7 +23,7 @@ public class NoteController {
     }
 
     @GetMapping("/{id}")
-    public OutputNoteDto getNote(@PathVariable UUID id) {
+    public OutputNoteDto getNote(@PathVariable UUID id) throws PostItException {
         return noteService.getNote(id);
     }
 
@@ -32,7 +33,7 @@ public class NoteController {
     }
 
     @PatchMapping("/{id}")
-    public OutputNoteDto updateNote(@PathVariable UUID id, @Valid @RequestBody InputNoteDto dto) {
+    public OutputNoteDto updateNote(@PathVariable UUID id, @Valid @RequestBody InputNoteDto dto) throws PostItException {
         return noteService.updateNote(id, dto);
     }
 }
